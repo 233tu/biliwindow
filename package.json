@@ -1,0 +1,32 @@
+{
+  "name": "game-floating-browser",
+  "version": "1.0.2",
+  "description": "一款打游戏专用的无边框悬浮浏览器",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "prebuild": "npm version patch",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.yourname.floatingbrowser",
+    "productName": "小小悬浮窗",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "settings.html",
+      "package.json"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

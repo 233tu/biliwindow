@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>快捷键设置</title>
+  <style>
+    body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; background-color: #222; color: white; }
+    .setting-item { margin-bottom: 20px; }
+    input { padding: 8px; width: 180px; background: #333; border: 1px solid #555; color: white; font-size: 14px; border-radius: 4px; }
+    button { padding: 10px 20px; background: #00a1d6; border: none; color: white; cursor: pointer; border-radius: 4px; font-weight: bold; }
+    button:hover { background: #00b5e5; }
+    .tip { font-size: 12px; color: #aaa; margin-top: 15px; line-height: 1.5; }
+    .highlight { color: #00a1d6; }
+  </style>
+</head>
+<body>
+  <h2>⚙️ 自定义快捷键</h2>
+  
+  <div class="setting-item">
+    <label>暂停 / 播放：</label>
+    <input type="text" id="key-play" placeholder="例如: Alt+P 或 F8">
+  </div>
+  
+  <div class="setting-item">
+    <label>快进 5 秒：</label>
+    <input type="text" id="key-forward" placeholder="例如: Alt+Right">
+  </div>
+
+  <button id="save-btn">保存并应用</button>
+  
+  <div class="tip">
+    提示：支持的组合键包括 <span class="highlight">Ctrl, Alt, Shift</span>。<br>
+    普通按键：字母键 (A-Z), 数字键 (0-9), 功能键 (F1-F12)<br>
+    方向键：<span class="highlight">Up, Down, Left, Right</span><br>
+    举例：Ctrl+Shift+A 或者 Alt+Right<br>
+    <i style="color: #666;">（不必担心大小写或空格，系统会自动帮你规范化）</i>
+  </div>
+
+  <script>
+    // 智能格式化函数：无论用户怎么乱敲，都转成标准的 Electron 格式
+    function formatShortcut(input) {
+      return input.split('+').map(key => {
+        let p = key.trim().toLowerCase();
+        if (p === 'ctrl' || p === 'command') return 'CommandOrControl';
+        if (p === 'alt') return 'Alt';
+        if (p === 'shift') return 'Shift';
+        if (p.length === 1) return p.toUpperCase(); // 单个字母变大写
+        return p.charAt(0).toUpperCase() + p.slice(1); // 单词首字母大写
+      }).join('+');
+    }
+
+    document.getElementById('save-btn').addEventListener('click', () => {
+      let rawPlay = document.getElementById('key-play').value || 'Alt+P';
+      let rawForward = document.getElementById('key-forward').value || 'Alt+Right';
+      
+      // 调用智能纠错
+      const cleanPlayKey = formatShortcut(rawPlay);
+      const cleanForwardKey = formatShortcut(rawForward);
+      
+      window.electronAPI.updateShortcuts({
+        play: cleanPlayKey,
+        forward: cleanForwardKey
+      });
+    });
+  </script>
+</body>
+</html>
